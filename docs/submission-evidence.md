@@ -11,6 +11,14 @@ Generated on 2026-09-16 from the local Windows Python 3.11 environment.
 
 ## Reproduce
 
+Create the presentation video from the terminal:
+
+```powershell
+.\.venv311\Scripts\python.exe scripts\make_submission_video.py --output outputs\tablemind_submission.mp4
+```
+
+The video is a generated simulation visualization, not a camera recording. It is suitable for showing the task flow, randomized seed, bimanual planner actions, verification, and evaluation result.
+
 ```powershell
 .\.venv311\Scripts\tablemind.exe evaluate --seeds 10 --output outputs\evaluation.json
 .\.venv311\Scripts\tablemind.exe robustness --output outputs\robustness.json
