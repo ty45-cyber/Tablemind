@@ -44,6 +44,21 @@ lerobot-train \
 
 The installed LeRobot 0.4.x release defaults to pushing policies to the Hub, so `--policy.push_to_hub=false` is required for local training. Set `DATASET_REPO_ID=tablemind_smolvla` and `DATASET_ROOT=outputs/datasets/tablemind_smolvla` when using the local dataset. Set `--policy.push_to_hub=true` and provide `--policy.repo_id=<HF_USER>/<POLICY_REPO>` only when Hub authentication and publishing are intended. Use the installed LeRobot `--help` output to adapt flags to the exact release in the environment. Do not commit model weights into this repository.
 
+On Windows PowerShell, use backticks for line continuation, or run the command on one line. Do not use Bash `\\` line continuations. This machine has no CUDA device, so use `cpu` locally:
+
+```powershell
+lerobot-train `
+  --policy.path=lerobot/smolvla_base `
+  --dataset.repo_id=tablemind_smolvla `
+  --dataset.root=outputs/datasets/tablemind_smolvla `
+  --batch_size=1 `
+  --steps=100 `
+  --output_dir=outputs/train/tablemind_smolvla `
+  --job_name=tablemind_smolvla `
+  --policy.device=cpu `
+  --policy.push_to_hub=false
+```
+
 ## 3. Export for Intel deployment
 
 Produce an exported policy package compatible with OpenVINO Physical AI, preserving its manifest and preprocessing/postprocessing artifacts. The final package belongs under `exports/policy/` locally and is intentionally ignored from source control.
