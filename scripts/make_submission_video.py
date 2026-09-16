@@ -8,6 +8,7 @@ import subprocess
 import tempfile
 from pathlib import Path
 
+import mujoco
 from PIL import Image, ImageDraw, ImageFont
 
 from tablemind.evaluation.evaluator import evaluate
@@ -54,22 +55,20 @@ def title_frame() -> Image.Image:
     return image
 
 
-def scene_frame(seed: int, step: int, action_text: str, status: str) -> Image.Image:
+def scene_frame(seed: int, step: int, action_text: str, status: str, renderer: mujoco.Renderer, data: mujoco.MjData) -> Image.Image:
     image, draw = base("Randomized scene and action execution")
-    sim = MuJoCoAdapter(seed)
-    left, top, right, bottom = 90, 210, 850, 640
-    draw.rounded_rectangle((left, top, right, bottom), radius=12, fill=(163, 122, 78), outline=(223, 187, 126), width=3)
-    draw.ellipse((390, 350, 550, 510), fill=(228, 228, 219), outline=(72, 72, 70), width=3)
-    for obj in sim.objects:
-        x = int(470 + obj.x * 310)
-        y = int(415 - obj.y * 300)
-        color = {"spoon": (216, 218, 223), "fork": (174, 178, 185), "plate": (245, 245, 240), "cup": (92, 157, 211), "drawer": (103, 71, 46)}.get(obj.name, (60, 60, 60))
-        radius = 22 if obj.name != "drawer" else 34
-        draw.ellipse((x - radius, y - radius, x + radius, y + radius), fill=color, outline=(35, 35, 35), width=2)
-        text(draw, (x, y + radius + 8), obj.name, 15, (30, 30, 30), True, "ma")
-    if action_text:
-        color = ORANGE if "right" in action_text else CYAN
-        draw.line((470, 595, 470 + (step % 2) * 170 - 85, 530), fill=color, width=7)
+    if data.qpos.size:
+        data.qpos[:] = 0
+        data.qpos[0] = 0.15 * (step % 2)
+        if data.qpos.size > 2:
+            data.qpos[2] = -0.12 * (step % 3)
+        mujoco.mj_forward(renderer.model, data)
+    renderer.update_scene(data)
+    rendered = Image.fromarray(renderer.render()).resize((760, 428), Image.Resampling.LANCZOS)
+    image.paste(rendered, (64, 190))
+    draw = ImageDraw.Draw(image)
+    draw.rectangle((64, 190, 824, 618), outline=(223, 187, 126), width=3)
+    text(draw, (80, 208), f"MuJoCo XML render  |  seed {seed}", 16, INK, True)
     draw.rounded_rectangle((900, 220, 1216, 430), radius=10, fill=(22, 39, 51))
     text(draw, (932, 250), f"SEED {seed:02d}", 18, CYAN, True)
     text(draw, (932, 300), f"STEP {step + 1} / 6", 22, INK, True)
@@ -103,6 +102,10 @@ def main() -> None:
         raise RuntimeError("ffmpeg is required and was not found on PATH")
 
     sim = MuJoCoAdapter(args.seed)
+    model = mujoco.MjModel.from_xml_path("mujoco/tablemind_scene.xml")
+    data = mujoco.MjData(model)
+    renderer = mujoco.Renderer(model, height=360, width=640)
+    mujoco.mj_forward(model, data)
     planner = BimanualTaskPlanner()
     actions = []
     while not planner.is_complete():
@@ -118,7 +121,7 @@ def main() -> None:
         frames = Path(temp)
         sequence = [title_frame()]
         for index, action in enumerate(actions):
-            sequence.extend([scene_frame(args.seed, index, action, "VERIFIED") for _ in range(FPS // 2)])
+            sequence.extend([scene_frame(args.seed, index, action, "VERIFIED", renderer, data) for _ in range(FPS // 2)])
         sequence.extend([result_frame(report) for _ in range(FPS * 3)])
         for index, image in enumerate(sequence):
             image.save(frames / f"frame_{index:05d}.png")

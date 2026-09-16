@@ -17,7 +17,7 @@ Create the presentation video from the terminal:
 .\.venv311\Scripts\python.exe scripts\make_submission_video.py --output outputs\tablemind_submission.mp4
 ```
 
-The video is a generated simulation visualization, not a camera recording. It is suitable for showing the task flow, randomized seed, bimanual planner actions, verification, and evaluation result.
+The video uses real offscreen MuJoCo renders from `mujoco/tablemind_scene.xml`, with the task flow, randomized seed, bimanual planner actions, verification, and evaluation result overlaid. It is simulation evidence, not physical-robot footage.
 
 ```powershell
 .\.venv311\Scripts\tablemind.exe evaluate --seeds 10 --output outputs\evaluation.json
