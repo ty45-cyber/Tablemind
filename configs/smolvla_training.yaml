@@ -1,0 +1,22 @@
+# Training intent for TABLEMIND. The executable source of truth is
+# scripts/train_smolvla.sh; CLI flags vary slightly by LeRobot release.
+policy:
+  name: smolvla_base
+  checkpoint: lerobot/smolvla_base
+  target: tablemind_dinner
+  action_chunks: true
+dataset:
+  repository: "<HF_USER>/tablemind_dinner"
+  target_episodes: 200
+  variation_axes:
+    - object_position
+    - object_orientation
+    - lighting
+    - background
+    - friction
+    - object_mass
+training:
+  steps: 20000
+  batch_size: 8
+  device: cuda
+  wandb: false

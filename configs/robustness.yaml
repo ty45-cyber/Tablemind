@@ -1,0 +1,9 @@
+seeds: 100
+perturbations:
+  object_position: [nominal, mild, strong]
+  object_orientation: [nominal, mild, strong]
+  lighting: [nominal, low, high]
+  background: [clean, cluttered]
+  friction: [low, nominal, high]
+  object_mass: [light, nominal, heavy]
+policy_success_degradation_tolerance: 0.05

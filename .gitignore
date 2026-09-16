@@ -1,0 +1,17 @@
+__pycache__/
+.pytest_cache/
+*.pyc
+.venv/
+.venv*/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.egg-info/
+outputs/*.json
+outputs/datasets/
+outputs/train/
+benchmarks/*.json
+data/demos/*.jsonl
+exports/policy/*
+!exports/policy/.gitkeep
+.DS_Store

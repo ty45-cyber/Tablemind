@@ -1,0 +1,16 @@
+track: intel_physical_ai_online
+format: online_simulation_first
+simulator: mujoco
+robot: dual_so101_simulated
+instruction: "Set the dinner table with the utensils, plate, and cup."
+inference:
+  default_backend: reference
+  openvino:
+    backend: openvino
+    device: AUTO
+    precision: FP16
+benchmark:
+  task_seeds: 10
+  internal_seeds: 100
+  warmup_iterations: 5
+  measured_iterations: 50

@@ -1,0 +1,14 @@
+policy_name: tablemind_smolvla
+source_model: lerobot/smolvla_base
+export_format: openvino
+output_dir: exports/policy
+inputs:
+  - image.top
+  - image.wrist
+  - state
+  - task
+outputs:
+  - action
+notes:
+  - Replace with an actual exported policy package before claiming policy benchmarks.
+  - Pin the model/export revision for reproducibility.

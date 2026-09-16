@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tablemind"
+version = "0.6.0"
+description = "Simulation-first adaptive bimanual VLA system for Intel Physical AI Online Challenge"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+sim = ["mujoco>=3.3"]
+vla = ["lerobot[smolvla]"]
+intel = ["openvino>=2026.0", "physicalai"]
+api = ["fastapi>=0.115", "uvicorn>=0.34"]
+train = ["lerobot[smolvla]", "mujoco>=3.3", "torch>=2.4"]
+dev = ["pytest>=8.0"]
+all = ["mujoco>=3.3", "lerobot[smolvla]", "openvino>=2026.0", "physicalai", "fastapi>=0.115", "uvicorn>=0.34", "pytest>=8.0", "torch>=2.4"]
+
+[project.scripts]
+tablemind = "tablemind.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["tablemind*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
