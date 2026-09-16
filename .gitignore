@@ -7,9 +7,7 @@ __pycache__/
 __pycache__/
 *.pyc
 *.egg-info/
-outputs/*.json
-outputs/datasets/
-outputs/train/
+outputs/
 benchmarks/*.json
 data/demos/*.jsonl
 exports/policy/*
